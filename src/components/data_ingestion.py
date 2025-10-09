@@ -5,6 +5,8 @@ from logger import logging
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+from components.data_transformation import DataTransformation
+from components.data_transformation import DataTransformationConfig
 logging.info("started_process")
 @dataclass
 class DataIngestionConfig:
@@ -15,6 +17,7 @@ class DataIngestionConfig:
 class DataIngestion:
     def __init__(self):
         self.ingestionconfig = DataIngestionConfig()
+        
     def  initie_data_ingestion(self):
         logging.info("Data reading started")
         try:
@@ -27,13 +30,20 @@ class DataIngestion:
             train_set.to_csv(self.ingestionconfig.train_data_path,index=False,header=True)
             test_set.to_csv(self.ingestionconfig.test_data_path,index=False,header=True)
             logging.info("Ingessition of the data is completed")
+            return(
+                self.ingestionconfig.train_data_path,
+                self.ingestionconfig.test_data_path
+
+            )
         except Exception as e:
             raise CustomException(e,sys)
 
+
 if __name__=="__main__":
     obj=DataIngestion()
-    obj.initie_data_ingestion()
-
+    train_data,test_data=obj.initie_data_ingestion()
+    data_transformation=DataTransformation()
+    data_transformation.initiate_data_transformation(train_data, test_data)
 
 
 
