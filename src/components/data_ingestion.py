@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
 from components.data_transformation import DataTransformation
 from components.data_transformation import DataTransformationConfig
+from components.model_trainer import ModelTrainer, ModelTrainerConfig
 logging.info("started_process")
 @dataclass
 class DataIngestionConfig:
@@ -17,7 +18,7 @@ class DataIngestionConfig:
 class DataIngestion:
     def __init__(self):
         self.ingestionconfig = DataIngestionConfig()
-        
+
     def  initie_data_ingestion(self):
         logging.info("Data reading started")
         try:
@@ -38,12 +39,13 @@ class DataIngestion:
         except Exception as e:
             raise CustomException(e,sys)
 
-
 if __name__=="__main__":
     obj=DataIngestion()
     train_data,test_data=obj.initie_data_ingestion()
     data_transformation=DataTransformation()
-    data_transformation.initiate_data_transformation(train_data, test_data)
+    train_arr, test_arr,_=data_transformation.initiate_data_transformation(train_data, test_data)
+    model_trainer=ModelTrainer()
+    model_trainer.initiate_model_traning(train_arr,test_arr)
 
 
 
